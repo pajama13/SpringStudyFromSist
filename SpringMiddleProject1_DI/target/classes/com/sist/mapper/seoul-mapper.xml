@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sist.mapper.SeoulMapper">
+	<!-- 중복되는 sql문장 별도 작성 => include태그로 불러와서 사용 -->
+	<!-- 
+		seoul_nature
+		
+		${seoul_tbl} = seoul_nature
+		#{seoul_tbl} = 'seoul_nature' (#{}은 작은 따옴표가 붙음)
+	 -->
+	<sql id="select-seoul">
+	  SELECT no,title,address,msg
+	</sql>
+	<!-- SeoulLocationVO의 alias(별칭)값인 SeoulVO를 resultType으로 작성 -->
+	<!-- Config.xml 파일 : <typeAlias type="com.sist.dao.SeoulLocationVO" alias="SeoulVO"/> -->
+	<select id="seoulListData" resultType="SeoulVO" parameterType="hashmap">
+	  <include refid="select-seoul"></include>
+	  FROM ${seoul_tbl}
+	</select>
+	<select id="seoulDetailData" resultType="SeoulVO" parameterType="hashmap">
+	  <include refid="select-seoul"></include>
+	  FROM ${seoul_tbl}
+	  WHERE no=#{no}
+	</select>
+</mapper>
