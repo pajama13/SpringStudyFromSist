@@ -1,0 +1,16 @@
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+  <!-- VO, Mapper 생성 시마다 아래와 같이 등록 필수 -->
+  <typeAliases>
+    <typeAlias type="com.sist.vo.RecipeVO" alias="RecipeVO"/>
+    <typeAlias type="com.sist.vo.GoodsVO" alias="GoodsVO"/>
+    <typeAlias type="com.sist.vo.FoodVO" alias="FoodVO"/> 
+  </typeAliases>
+  <mappers>
+    <mapper resource="com/sist/mapper/recipe-mapper.xml"/>
+    <mapper resource="com/sist/mapper/goods-mapper.xml"/>
+    <mapper resource="com/sist/mapper/food-mapper.xml"/>
+  </mappers>
+</configuration>
