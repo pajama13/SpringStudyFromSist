@@ -1,17 +1,5 @@
 package com.sist.myapp;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,8 +8,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.sist.dao.DataBoardDAO;
-import com.sist.dao.DataBoardVO;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URLEncoder;
+import java.util.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.RowSet;
+
+import com.sist.dao.*;
 
 @Controller
 public class DataBoardController {
@@ -47,7 +44,7 @@ public class DataBoardController {
 	   model.addAttribute("list", list);
 	   model.addAttribute("curpage", curpage);
 	   model.addAttribute("totalpage", totalpage);
-	   return "databoard/list";//forward => request,model을 JSP로 전송 
+	   return "databoard/list";  //forward => request,model을 JSP로 전송 
    }
    @GetMapping("databoard/insert.do")
    public String databoard_insert() //폼
@@ -58,13 +55,13 @@ public class DataBoardController {
    public String databoard_insert_ok(DataBoardVO vo)
    {
 	   List<MultipartFile> list=vo.getFiles();
-	   if(list==null)//업로드가 안된 상태
+	   if(list==null)  //업로드가 안된 상태
 	   {
 		   vo.setFilename("");
 		   vo.setFilesize("");
 		   vo.setFilecount(0);
 	   }
-	   else// 업로드가 된 상태 a.jpg,b.jpg,c.jpg
+	   else  //업로드가 된 상태 a.jpg,b.jpg,c.jpg
 	   {
 		   String fn="";
 		   String fs="";
@@ -102,8 +99,8 @@ public class DataBoardController {
 	     model.addAttribute("nList", nList);
 	     model.addAttribute("sList", sList);
 	     /*
-	      *   파일명(파일크기)
-	      */
+	         파일명(파일크기)
+	     */
 	   }
        model.addAttribute("vo", vo);	   
 	   return "databoard/detail";
@@ -135,7 +132,7 @@ public class DataBoardController {
            bos.close();
 	   }catch(Exception ex) {}
    }
-   //update.do?no=${vo.no }
+   // update.do?no=${vo.no }
    @GetMapping("databoard/update.do")
    public String databoard_update(int no,Model model)
    {
@@ -152,6 +149,19 @@ public class DataBoardController {
 	   return "redirect:detail.do";
 			   
    }
+   
+   @PostMapping("databoard/find.do")
+   public String databoard_find(String[] fs,String ss,Model model)
+   {
+	   Map map=new HashMap();
+	   map.put("fsArr", fs);
+	   map.put("ss", ss);
+	   // DAO연동 = 검색데이터 읽기 
+	   List<DataBoardVO> list=dao.databoardFindData(map);
+	   int count=dao.FindCount(map);
+	   model.addAttribute("count", count);
+	   model.addAttribute("list", list);
+	   return "databoard/find";
+   }
 }
-
 

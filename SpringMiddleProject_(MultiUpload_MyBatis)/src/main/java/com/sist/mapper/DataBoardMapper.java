@@ -9,16 +9,14 @@ import org.apache.ibatis.annotations.Update;
 
 import com.sist.dao.*;
 /*
- *    1. 목록 => 페이징 (총페이지) => 인라인뷰 
- *    2. 데이터 추가 => 파일업로드 => List
- *    3. 데이터 수정 
- *    4. 데이터 삭제 => 파일 삭제 
- *    5. 데이터 상세보기 => 다운로드 => 리턴형 void (Controller : String ,void)
- *    6. 데이터 검색 => MyBatis (동적쿼리) 
- *                   trim , foreach , choose , when ....
+     1. 목록 => 페이징 (총페이지) => 인라인뷰 
+     2. 데이터 추가 => 파일업로드 => List
+     3. 데이터 수정 
+     4. 데이터 삭제 => 파일 삭제 
+     5. 데이터 상세보기 => 다운로드 => 리턴형 void (Controller : String ,void)
+     6. 데이터 검색 => MyBatis (동적쿼리) 
+                    trim , foreach , choose , when ....
  */
-
-import lombok.Delegate;
 public interface DataBoardMapper {
    //1.목록 
    @Select("SELECT no,subject,name,TO_CHAR(regdate,'YYYY-MM-DD') as dbday,hit,filecount,num "
@@ -63,7 +61,38 @@ public interface DataBoardMapper {
    public void databoardDelete(int no);
    
    @Update("UPDATE spring_databoard SET "
-			  +"name=#{name},subject=#{subject},content=#{content} "
-			  +"WHERE no=#{no}")
+		  +"name=#{name},subject=#{subject},content=#{content} "
+		  +"WHERE no=#{no}")
    public void databoardUpdate(DataBoardVO vo);
+   
+   //<select id="databoardFindData" resultType="DataBoardVO" parameterType="hashmap">
+   public List<DataBoardVO> databoardFindData(Map map);
+   
+   @Select({
+	      "<script>"
+		  +"SELECT COUNT(*) FROM spring_databoard "
+		  +"WHERE "
+		  +"<trim prefixOverrides=\"OR\">"
+		  +"<foreach collection=\"fsArr\" item=\"fd\">"
+          +"<trim prefix=\"OR\">"
+          +"<choose>"
+          +"<when test=\"fd=='N'.toString()\">"
+          +"name LIKE '%'||#{ss}||'%'"
+          +"</when>"
+          +"<when test=\"fd=='S'.toString()\">"
+          +"subject LIKE '%'||#{ss}||'%'"
+          +"</when>"
+          +"<when test=\"fd=='C'.toString()\">"
+          +"content LIKE '%'||#{ss}||'%'"
+          +"</when>"
+          +"</choose>"
+          +"</trim>"
+          +"</foreach>"
+          +"</trim>"
+          +"</script>"})
+   public int findCount(Map map);
+          
 }
+
+
+

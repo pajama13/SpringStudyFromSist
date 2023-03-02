@@ -1,6 +1,7 @@
 package com.sist.dao;
 import java.util.*;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectKey;
@@ -31,69 +32,61 @@ public class DataBoardDAO {
 		   return mapper.databoardTotalPage();
 	   }
 	   
-	   /*
 	   //2.추가 
 	   //Sequence
-	   @SelectKey(keyProperty = "no",resultType = int.class, before = true,
+	   /*@SelectKey(keyProperty = "no",resultType = int.class, before = true,
 			      statement = "SELECT NVL(MAX(no)+1,1) as no FROM spring_databoard")
 	   
 	   @Insert("INSERT INTO spring_databoard(no,name,subject,content,pwd,filename,filesize,filecount) "
-			  +"VALUES(#{no},#{name},#{subject},#{content},#{pwd},#{filename},#{filesize},#{filecount})")
-	   */
+			  +"VALUES(#{no},#{name},#{subject},#{content},#{pwd},#{filename},#{filesize},#{filecount})")*/
 	   public void databoardInsert(DataBoardVO vo)
 	   {
 		   mapper.databoardInsert(vo);
 	   }
 	   
-	  /* 
 	  //3. 상세보기 
-	   @Update("UPDATE spring_databoard SET "
+	   /*@Update("UPDATE spring_databoard SET "
 			  +"hit=hit+1 "
-			  +"WHERE no=#{no}")
-	   @Select("SELECT no,name,subject,content,TO_CHAR(regdate,'YYYY-MM-DD') as dbday,hit,"
+			  +"WHERE no=#{no}")*/
+	   /*@Select("SELECT no,name,subject,content,TO_CHAR(regdate,'YYYY-MM-DD') as dbday,hit,"
 			  +"filename,filesize,filecount "
 			  +"FROM spring_databoard "
-			  +"WHERE no=#{no}")
-	   */
+			  +"WHERE no=#{no}")*/
 	   public DataBoardVO databoardDetailData(int no)
 	   {
 		   mapper.hitIncrement(no);
 		   return mapper.databoardDetailData(no);
 	   }
 	   
-	   /*
-	      //4. 삭제
-		   @Select("SELECT pwd FROM spring_databoard WHERE no=#{no}")
-		   public String databoardGetPassword(int no);
-		   
-		   @Select("SELECT filename,filesize,filecount FROM spring_databoard WHERE no=#{no}")
-		   public DataBoardVO databoardFileInfoData(int no);
-		   
-		   @Delete("DELETE FROM spring_databoard WHERE no=#{no}")
-		   public void databoardDelete(int no);
-	   */
+	   //4. 삭제
+	   //@Select("SELECT pwd FROM spring_databoard WHERE no=#{no}")
+	   //public String databoardGetPassword(int no);
+	   
+	   //@Select("SELECT filename,filesize,filecount FROM spring_databoard WHERE no=#{no}")
 	   public DataBoardVO databoardFileInfoData(int no)
 	   {
 		   return mapper.databoardFileInfoData(no);
 	   }
 	   
+	   //@Delete("DELETE FROM spring_databoard WHERE no=#{no}")
 	   public boolean databoardDelete(int no,String pwd)
 	   {
 		   boolean bCheck=false;
 		   String db_pwd=mapper.databoardGetPassword(no);
 		   if(db_pwd.equals(pwd))
 		   {
-			   bCheck=true;
-			   mapper.databoardDelete(no);
+			  bCheck=true;
+			  mapper.databoardDelete(no);
 		   }
 		   return bCheck;
 	   }
 	   
-	   //수정
+	   // 수정 데이터 
 	   public DataBoardVO databoardUpdateData(int no)
 	   {
 		   return mapper.databoardDetailData(no);
 	   }
+	   
 	   public boolean pwdCheck(int no,String pwd)
 	   {
 		   boolean bCheck=false;
@@ -104,14 +97,24 @@ public class DataBoardDAO {
 	   }
 	   
 	   /*
-	    @Update("UPDATE spring_databoard SET "
+	    *  @Update("UPDATE spring_databoard SET "
 		  +"name=#{name},subject=#{subject},content=#{content} "
 		  +"WHETE no=#{no}")
-   		public void databoardUpdate(DataBoardVO vo);
+   public void databoardUpdate(DataBoardVO vo);
 	    */
 	   public void databoardUpdate(DataBoardVO vo)
 	   {
 		   mapper.databoardUpdate(vo);
 	   }
 	   
+	   public int FindCount(Map map)
+	   {
+		   return mapper.findCount(map);
+	   }
+	   
+	   public List<DataBoardVO> databoardFindData(Map map)
+	   {
+		   return mapper.databoardFindData(map);
+	   }
 }
+
